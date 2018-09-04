@@ -101,7 +101,8 @@
     "node": ">= 6.0.0"
   },
   "scripts": {
-    "start": "nps",
+    "start": "au run --watch",
+    "deploy": "au build --env prod && firebase deploy",
     "test": "nps test"
   },
   "main": "dist/app.bundle.js"

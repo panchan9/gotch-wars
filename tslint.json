@@ -1,5 +1,34 @@
 {
   "rules": {
-    "no-empty": true
+    "triple-equals": true,
+    // "no-unused-expression": true,
+    // Disallow duplicate imports in the same file.
+    "no-duplicate-imports": true,
+    // Warn if code has as import or variable that is unused.
+    "no-unused-expression": { "severity": "warning" },
+    "import-spacing": true,
+    // Warns if code has an import or variable that is unused.
+    "no-unused-variable": {"severity": "warning" },
+    // "no-unused-variable": [true, {"ignore-pattern": "^_"}],
+    // "no-floating-promises": true,
+
+    // "arrow-return-shorthand": true,
+    "semicolon": [ true, "always" ],
+    // "curly": true,
+    "class-name": true,
+    "comment-format": [ true, "check-space" ],
+    // "import-spacing": true,
+    "indent": [
+      true,
+      "spaces",
+      2
+    ],
+    // "interface-over-type-literal": true,
+    "jsdoc-format": true,
+    "max-line-length": [ true, 120 ],
+    "quotemark": [
+      true,
+      "single"
+    ]
   }
 }

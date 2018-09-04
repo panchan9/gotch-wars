@@ -29,3 +29,8 @@ node_modules
 
 # Compiled files
 scripts
+dist
+src/environment.ts
+
+.firebase
+firebase-debug.log
