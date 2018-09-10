@@ -30,7 +30,7 @@ node_modules
 # Compiled files
 scripts
 dist
-src/environment.ts
+environment.ts
 
 .firebase
 firebase-debug.log
