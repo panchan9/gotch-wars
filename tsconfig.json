@@ -27,6 +27,11 @@
     "./test/**/*.ts",
     "./custom_typings/**/*.d.ts"
   ],
+  "exclude": [
+    "node_modules",
+    "test",
+    "aurelia_project",
+  ],
   "atom": {
     "rewriteTsconfig": false
   }
