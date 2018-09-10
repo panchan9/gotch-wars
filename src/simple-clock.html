@@ -1,0 +1,36 @@
+<template>
+  <!-- <require from="./simple-clock.scss"></require> -->
+
+  <style>
+    body{
+      background:hsl(50,20%,93%);
+      margin:0;
+    }
+
+    canvas{
+      display:block;
+      width:100%;
+      height:100%;
+    }
+
+    #clock-container{
+      position: absolute;
+      left: 50%;
+      top: 65%;
+      transform: translate(-50%,-50%);
+      font-size: 56px;
+      font-weight: 300;
+      color: hsl(0,0%,25%);
+      display: flex;
+    }
+  </style>
+
+
+  <div id="clock-container">
+    <span class="time" id="H"></span>
+    <span class="delim">:</span>
+    <span class="time" id="M"></span>
+    <span class="delim">:</span>
+    <span class="time" id="S"></span>
+  </div>
+</template>
