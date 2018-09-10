@@ -1,0 +1,28 @@
+<template>
+  <require from="./record-keeper.scss"></require>
+  <require from="./simple-clock"></require>
+
+  <article class="container au-animate">
+    <h1>Record Today's Morning Practice!!</h1>
+
+    <simple-clock></simple-clock>
+
+    <button mdc-fab class="material-icons md-120" click.delegate="showDialog()">
+      done_outline
+    </button>
+  </article>
+
+  <!-- Confirmation Dialog -->
+  <mdc-dialog header="Are you sure to record time?"
+              accept="OK"
+              accept-action="true"
+              cancel="Cancel"
+              view-model.ref="dialog"
+              on-click.delegate="onDialogClick($event)">
+    <p>
+      <warning-text>
+        You cannot change the recorded time lately.
+      </warning-text>
+    </p>
+  </mdc-dialog>
+</template>

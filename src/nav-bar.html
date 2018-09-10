@@ -1,0 +1,43 @@
+<template>
+  <require from="./nav-bar.scss"></require>
+
+  <div class="container-persistent-body">
+    <!-- SIDE DRAWER AREA -->
+    <mdc-drawer-persistent open.bind="open" on-open.delegate="onOpen()" on-close.delegate="onClose()">
+      <mdc-list tag="nav" click.delegate="toggleMenu()">
+        <!-- <mdc-list-item href.bind="row.href" repeat.for="row of router.navigation">${row.title}</mdc-list-item> -->
+        <a href.bind="row.href" repeat.for="row of router.navigation">
+          <mdc-list-item>${row.title}</mdc-list-item>
+        </a>
+        <mdc-list-item click.delegate="logout()">Logout</mdc-list-item>
+      </mdc-list>
+    </mdc-drawer-persistent>
+
+    <!-- HEADER AREA -->
+    <div class="container-persistent-content">
+      <nav>
+        <mdc-toolbar>
+          <mdc-toolbar-row>
+            <mdc-toolbar-section start="true">
+              <a click.delegate="toggleMenu()" class="material-icons mdc-toolbar__menu-icon">menu</a>
+
+              <mdc-toolbar-title>
+                <a route-href="route: welcome">
+                  Gotch Wars
+                </a>
+              </mdc-toolbar-title>
+            </mdc-toolbar-section>
+          </mdc-toolbar-row>
+        </mdc-toolbar>
+      </nav>
+
+      <!-- MAIN AREA -->
+      <div class="container-persistent-main">
+        <!-- <template replaceable part="main-content"></template> -->
+        <slot></slot>
+      </div>
+
+    </div>
+  </div>
+
+</template>

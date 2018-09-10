@@ -1,0 +1,24 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300);
+
+body{
+	background:hsl(50,20%,93%);
+	margin:0;
+}
+
+canvas{
+	display:block;
+	width:100%;
+	height:100%;
+}
+
+#clock-container{
+	position: absolute;
+	left: 50%;
+	top: 50%;
+  transform: translate(-50%,-50%);
+  // TODO:
+  // font: 56px "Open Sans", sans-serif;
+  font-size: 56px;
+  font-weight: 300;
+	color: hsl(0,0%,25%);
+}

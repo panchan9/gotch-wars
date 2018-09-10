@@ -8,10 +8,16 @@
   },
   "license": "MIT",
   "dependencies": {
-    "aurelia-bootstrapper": "^2.2.0",
+    "@material/linear-progress": "^0.39.1",
+    "@types/bluebird": "^3.5.24",
     "aurelia-animator-css": "^1.0.4",
+    "aurelia-bootstrapper": "^2.2.0",
+    "aurelia-mdc-bridge": "^0.17.1",
+    "aurelia-polyfills": "^1.3.0",
     "bluebird": "^3.5.1",
-    "aurelia-polyfills": "^1.3.0"
+    "firebase": "^5.4.2",
+    "firebaseui": "^3.4.0",
+    "material-design-icons": "^3.0.1"
   },
   "peerDependencies": {},
   "devDependencies": {
