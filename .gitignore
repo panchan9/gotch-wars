@@ -34,3 +34,5 @@ src/environment.ts
 
 .firebase
 firebase-debug.log
+
+.chrome/

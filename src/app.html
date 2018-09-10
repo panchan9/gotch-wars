@@ -1,3 +1,19 @@
 <template>
-  <h1>${message}</h1>
+  <require from="material-components-web/dist/material-components-web.css"></require>
+  <require from="./app.scss"></require>
+  <require from="nav-bar"></require>
+
+  <nav-bar>
+    <mdc-linear-progress
+      if.bind="router.isNavigating"
+      open.bind="true"
+      indeterminate.bind="true"
+      buffer.bind="0.6"
+      class="linear-progress-secondary">
+    </mdc-linear-progress>
+
+    <main>
+      <router-view></router-view>
+    </main>
+  </nav-bar>
 </template>
