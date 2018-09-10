@@ -1,0 +1,31 @@
+<template>
+  <require from="./admin.scss"></require>
+
+  <h1>Register Arrival Record</h1>
+
+  <form class="form-group">
+    <mdc-text-field value.bind="arrival.userId"
+        outlined="true" focused="true" required="true">
+      <i slot="leading-icon" class="material-icons">person</i>
+      User ID
+    </mdc-text-field>
+
+    <mdc-text-field value.bind="arrival.arrivedDate" type="date"
+        placeholder="Created At" outlined="true" required="true">
+      <i slot="leading-icon" class="material-icons">event</i>
+      Created At
+    </mdc-text-field>
+
+    <mdc-text-field value.bind="arrival.arrivedTime"
+        type="time" step="1" placeholder="Created Time"
+        outline="true" required="true">
+      <i slot="leading-icon" class="material-icons">schedule</i>
+    </mdc-text-field>
+
+    <button mdc-button="raised.bind: true; stroked.bind: true;"
+            disabled.bind="disabled" click.delegate="save()">
+      <i class="material-icons mdc-button__icon">send</i>
+      Submit
+    </button>
+  </form>
+</template>
