@@ -5,9 +5,9 @@ import { FirebaseService } from './firebase';
 import { Router } from 'aurelia-router';
 
 @autoinject
-export class AuthenticationService {
+export class AuthService {
 
-  private readonly logger = getLogger(AuthenticationService.name);
+  private readonly logger = getLogger(AuthService.name);
 
   auth: firebase.auth.Auth;
   isLoggedIn = false;
@@ -25,7 +25,9 @@ export class AuthenticationService {
       this.isLoggedIn = user ? true : false;
 
       if (this.isLoggedIn) {
-        this.router.navigateBack();
+        // this.router.navigateBack();
+        // this.router.navigate('/');
+        this.router.navigateToRoute('record-history');
       } else {
         this.logger.info('router', this.router)
         this.router.navigate('/');
@@ -42,10 +44,25 @@ export class AuthenticationService {
     });
   }
 
-  getUserId() {
+  getUid() {
     if (!this.auth.currentUser) {
       throw new Error('User not logged in');
     }
     return this.auth.currentUser.uid;
+  }
+
+  getUser() {
+    if (!this.auth.currentUser) {
+      throw new Error('User not logged in');
+    }
+    return this.auth.currentUser;
+  }
+
+  async isAdmin() {
+    if (!this.auth.currentUser) {
+      return false;
+    }
+    return this.auth.currentUser.getIdTokenResult()
+      .then(idTokenResult => idTokenResult.claims.admin === true);
   }
 }
