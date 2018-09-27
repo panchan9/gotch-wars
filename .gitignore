@@ -31,8 +31,10 @@ node_modules
 scripts
 dist
 environment.ts
+functions/lib
 
 .firebase
 firebase-debug.log
+functions/.runtimeconfig.json
 
 .chrome/
