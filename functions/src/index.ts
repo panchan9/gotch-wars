@@ -4,6 +4,7 @@ import * as admin from 'firebase-admin';
 import { Request, Response } from 'firebase-functions';
 import { FetchUsers } from './fetch-users';
 import { SlackService } from './services/slack';
+import { FirestoreService } from './services/firestore';
 import { HttpsError } from 'firebase-functions/lib/providers/https';
 
 import * as express from 'express';
@@ -30,6 +31,7 @@ admin.initializeApp({
   credential: admin.credential.cert(config.credentials.firebase.serviceaccount),
   databaseURL: 'https://gotch-wars.firebaseio.com',
 });
+const firestore = new FirestoreService(admin.firestore());
 
 const tokyo = 'asia-northeast1';
 
@@ -50,6 +52,7 @@ export const notifySlack = functions
 
 export const fetchUsers = functions
   .region(tokyo)
+  // https://firebase.google.com/docs/functions/callable-reference
   .https.onCall(async (data, context) => {
 // export const fetchUsers = functions.https.onRequest(async (req: Request, resp: Response) => {
     // https://firebase.google.com/docs/functions/callable?hl=ja#handle_errors
@@ -73,11 +76,48 @@ export const fetchUsers = functions
     }
   });
 
+export const registerArrival = functions
+  .region(tokyo)
+  .https.onCall(async (data, context) => {
+    if (!context.auth) {
+      throw new HttpsError(
+        'unauthenticated',
+        'The function must be called while authenticated.',
+      );
+    }
+
+    const ipList: string[] = Object.keys(config.allowed.ip)
+      .map(key => config.allowed.ip[key]);
+
+    if (ipList.indexOf(context.rawRequest.ip) === -1) {
+      console.info('Request from unknown IP address:', context.rawRequest.ip);
+      throw new HttpsError(
+        'permission-denied',
+        'The request must be sent from allowed IP address.',
+      );
+    }
+    console.info('Request body:', data);
+
+    const id = await firestore.addArrival(data)
+      .catch(err => {
+        console.error('Failed to register Arrival:\n', err);
+        throw new HttpsError('invalid-argument', err);
+      });
+
+    const user = await admin.auth().getUser(data.uid);
+    const slack = new SlackService();
+    await slack.post(user.displayName)
+      .catch(err => { throw new HttpsError('internal', err); });
+
+    return id;
+  });
+
+
 export const grantAdminPrivilege = functions
   .region(tokyo)
   .https.onRequest(async (req, resp) => {
     const uid = req.body.uid;
-    const claims = req.body.claims;
+    const claims = req.body.userClaims;
     console.info({uid, claims});
 
     admin.auth().setCustomUserClaims(uid, claims)
