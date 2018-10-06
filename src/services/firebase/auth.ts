@@ -1,8 +1,8 @@
 import { autoinject } from 'aurelia-framework';
+import { BindingSignaler } from 'aurelia-templating-resources';
 import { getLogger } from 'aurelia-logging';
 import * as firebase from 'firebase/app';
 import { FirebaseService } from './firebase';
-import { Router } from 'aurelia-router';
 
 @autoinject
 export class AuthService {
@@ -11,28 +11,39 @@ export class AuthService {
 
   auth: firebase.auth.Auth;
   isLoggedIn = false;
+  isAdmin = false;
 
-  constructor(private fb: FirebaseService, private router: Router) {
+  constructor(
+    private fb: FirebaseService,
+    private signaler: BindingSignaler,
+  ) {
     this.auth = this.fb.app.auth();
     // Exisiting and future Auth states are persisted even on
     // other browser tab or window unless the user explicitly sign out.
     // https://firebase.google.com/docs/auth/web/auth-state-persistence?hl=ja
-    this.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+    // this.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
     this.logger.info('Initialize Authentication');
 
     this.auth.onAuthStateChanged(user => {
       this.logger.info('Auth Stage Changed', user);
-      this.isLoggedIn = user ? true : false;
-
-      if (this.isLoggedIn) {
-        // this.router.navigateBack();
-        // this.router.navigate('/');
-        this.router.navigateToRoute('record-history');
-      } else {
-        this.logger.info('router', this.router)
-        this.router.navigate('/');
-      }
+      this.updateUserStatus(user)
+        .then(() => {
+          this.signaler.signal('auth:state:changed');
+        });
     });
+  }
+
+  async updateUserStatus(user: firebase.User | null) {
+    this.isLoggedIn = user ? true : false;
+
+    if (this.isLoggedIn) {
+      this.isAdmin = await this.getUser()
+        .getIdTokenResult()
+        .then(idTokenResult => idTokenResult.claims.admin === true);
+    } else {
+      this.isAdmin = false;
+    }
+
   }
 
   logout() {
@@ -58,11 +69,7 @@ export class AuthService {
     return this.auth.currentUser;
   }
 
-  async isAdmin() {
-    if (!this.auth.currentUser) {
-      return false;
-    }
-    return this.auth.currentUser.getIdTokenResult()
-      .then(idTokenResult => idTokenResult.claims.admin === true);
+  getIdToken(): Promise<string> {
+    return this.getUser().getIdToken();
   }
 }

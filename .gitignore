@@ -36,5 +36,6 @@ functions/lib
 .firebase
 firebase-debug.log
 functions/.runtimeconfig.json
+functions/.vscode
 
 .chrome/

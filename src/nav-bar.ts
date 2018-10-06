@@ -1,21 +1,17 @@
 import { autoinject } from 'aurelia-framework';
 import { Router } from 'aurelia-router';
-import { AuthenticationService } from 'services/firebase/authentication';
+import { AuthService } from 'services/firebase/auth';
 
 @autoinject
 export class NavBar {
 
-  open = false;
+  isOpen = false;
 
-  constructor(private router: Router, private auth: AuthenticationService) {}
+  constructor(private router: Router, private auth: AuthService) {}
 
   toggleMenu() {
-    console.log(this.open)
-    this.open = !this.open;
+    this.isOpen = !this.isOpen;
   }
-
-  onOpen() {}
-  onClose() {}
 
   logout() {
     this.auth.logout();

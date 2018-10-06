@@ -1,18 +1,30 @@
 /// <reference types="aurelia-loader-webpack/src/webpack-hot-interface"/>
 // we want font-awesome to load as soon as possible to show the fa-spinner
-import {Aurelia} from 'aurelia-framework'
+import {Aurelia} from 'aurelia-framework';
 import environment from './environment';
 import {PLATFORM} from 'aurelia-pal';
 import * as Bluebird from 'bluebird';
 import 'material-components-web';
+import { getLogger } from 'aurelia-logging';
+import { ConfigBuilder } from 'aurelia-mdc-bridge';
+
+// Use Icons and Web Font as self-hosting
+// https://medium.com/@daddycat/using-offline-material-icons-and-roboto-font-in-electron-app-f25082447443
+// https://google.github.io/material-design-icons/
+// import 'material-design-icons/iconfont/material-icons.css';
+// import 'roboto-npm-webfont/full/style.css';
 
 // remove out if you don't want a Promise polyfill (remove also from webpack.config.js)
 Bluebird.config({ warnings: { wForgottenReturn: false } });
 
-export function configure(aurelia: Aurelia) {
+export async function configure(aurelia: Aurelia) {
+
+  const logger = getLogger('Middleware');
+
   aurelia.use
     .standardConfiguration()
-    .plugin(PLATFORM.moduleName('aurelia-mdc-bridge'))
+    // .plugin(PLATFORM.moduleName('aurelia-mdc-bridge'))
+    .plugin(PLATFORM.moduleName('aurelia-mdc-bridge'), chooseMaterialDesignComponents)
     .feature(PLATFORM.moduleName('resources/index'));
 
   // Uncomment the line below to enable animation.
@@ -30,5 +42,46 @@ export function configure(aurelia: Aurelia) {
     aurelia.use.plugin(PLATFORM.moduleName('aurelia-testing'));
   }
 
-  return aurelia.start().then(() => aurelia.setRoot(PLATFORM.moduleName('app')));
+  await aurelia.start();
+  await aurelia.setRoot(PLATFORM.moduleName('app'));
+
+  // const httpClient = aurelia.container.invoke(HttpClient)
+  //   .configure((config: HttpClientConfiguration) => {
+  //     config
+  //       .useStandardConfiguration()
+  //       .withBaseUrl(environment.firebase.functionsURL)
+  //       .withDefaults({
+  //         mode: 'cors',
+  //       })
+  //       .withInterceptor({
+  //         request(req) {
+  //           logger.debug(`${req.method} Request: ${req.url}`);
+  //           return auth.getIdToken().then(idToken => {
+  //             req.headers.set('Authorization', `Bearer ${idToken}`);
+  //             return req;
+  //           });
+  //         },
+  //       });
+  //   });
+
+  // aurelia.container.registerInstance(HttpClient, httpClient);
+
+}
+
+function chooseMaterialDesignComponents(b: ConfigBuilder) {
+  return b
+    .useTextFields()
+    .useButtons()
+    .useCheckboxes()
+    .useDialogs()
+    .useFab()
+    .useLinearProgress()
+    .useLists()
+    .useRadioButtons()
+    .useSelectMenus()
+    .useSnackbars()
+    .useSwitches()
+    .useTemporaryDrawer()
+    .useToolbars()
+    ;
 }

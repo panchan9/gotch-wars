@@ -34,6 +34,7 @@
 
 // @import "@material/linear-progress/mdc-linear-progress";
 
+
 body {
   margin: 0;
 }
@@ -47,3 +48,8 @@ main {
 // .linear-progress-secondary {
 //   @include mdc-linear-progress-bar-color($mdc-theme-secondary);
 // }
+
+.material-icons.list-icon {
+  vertical-align: middle;
+  margin-right: 8px;
+}

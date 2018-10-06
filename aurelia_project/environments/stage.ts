@@ -10,5 +10,6 @@ export default {
     projectId: "gotch-wars",
     // storageBucket: "gotch-wars.appspot.com",
     // messagingSenderId: "680392259129",
+    functionsURL: "https://asia-northeast1-gotch-wars.cloudfunctions.net",
   },
 };
