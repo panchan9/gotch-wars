@@ -19,12 +19,12 @@ export class Login {
 
   canActivate(_: any, __: any, navInst: NavigationInstruction) {
     if (this.auth.isLoggedIn) {
+      this.logger.info('User is already logged in, sor return back');
       navInst.router.navigateBack();
     }
   }
 
   attached() {
-    this.logger.debug('activate', this.ui);
     this.authUi.render('#firebaseui-auth-container');
   }
 }

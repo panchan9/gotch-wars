@@ -1,7 +1,6 @@
-import { Router, RouterConfiguration, NavigationInstruction, Next, Redirect } from 'aurelia-router';
+import { Router, RouterConfiguration } from 'aurelia-router';
 import { PLATFORM } from 'aurelia-pal';
 import { AuthService } from 'services/firebase/auth';
-import { getLogger } from 'aurelia-logging';
 import { autoinject } from 'aurelia-framework';
 import { AuthorizeStep } from 'authorize-step';
 
@@ -40,7 +39,11 @@ export class App {
         moduleId: PLATFORM.moduleName('admin/admin'),
         title: 'Admin Console',
         nav: true,
-        settings: { auth: true, admin: true },
+        settings: {
+          icon: 'supervisor_account',
+          auth: true,
+          admin: true,
+        },
       },
       {
         route: 'record/new',
@@ -48,7 +51,10 @@ export class App {
         moduleId: PLATFORM.moduleName('record-keeper'),
         title: 'Record Keeper',
         nav: true,
-        settings: { auth: true },
+        settings: {
+          icon: 'av_timer',
+          auth: true,
+        },
       },
       {
         route: 'record/history',
@@ -56,6 +62,10 @@ export class App {
         moduleId: PLATFORM.moduleName('record-history'),
         title: 'Record History',
         nav: true,
+        settings: {
+          icon: 'calendar_today',
+          auth: true
+        },
       },
     ]);
 

@@ -10,10 +10,11 @@ export class AuthenticationUI {
 
   private readonly logger = getLogger(AuthenticationUI.name);
 
+  // https://github.com/firebase/firebaseui-web/blob/master/README.md
   private uiConfig: firebaseui.auth.Config = {
     callbacks: {
       signInSuccessWithAuthResult: () => {
-        return this.router.navigate('/');
+        return false;   // don't redirect
       },
       uiShown: () => { this.logger.debug('UI Show')},
     },

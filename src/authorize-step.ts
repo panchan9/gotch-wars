@@ -20,6 +20,7 @@ export class AuthorizeStep {
       .some(i => i.config.settings.admin);
 
     if (isAdminRequired && !this.auth.isAdmin) {
+      this.logger.warn('Non-admin user tried to access to admin page');
       // TODO: redirect 403 error page
       return next.cancel(new Redirect('login'));
     }
@@ -29,4 +30,5 @@ export class AuthorizeStep {
 
     return next();
   }
+
 }

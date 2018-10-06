@@ -1,10 +1,24 @@
 <template>
   <require from="./admin.scss"></require>
 
+  <mdc-linear-progress open.bind="isLoading" indeterminate="true" buffer.bind="0.3">
+  </mdc-linear-progress>
+
   <h1>Register Arrival Record</h1>
 
   <form class="form-group">
-    <mdc-text-field value.bind="arrival.uid"
+    <mdc-switch checked.bind="isNewUser"
+        label-on="New User" label-off="Select Existing User">
+    </mdc-switch>
+
+    <mdc-select value.bind="arrival.uid" if.bind="!isNewUser"
+        label-text="UID" box="true" disabled.bind="isLoading">
+      <mdc-list-item repeat.for="user of users" model.bind="user.uid">
+        ${user.name}
+      </mdc-list-item>
+    </mdc-select>
+
+    <mdc-text-field value.bind="arrival.uid" if.bind="isNewUser"
         outlined="true" focused="true" required="true">
       <i slot="leading-icon" class="material-icons">person</i>
       User ID
@@ -23,7 +37,7 @@
     </mdc-text-field>
 
     <button mdc-button="raised.bind: true; stroked.bind: true;"
-            disabled.bind="disabled" click.delegate="save()">
+            disabled.bind="isLoading" click.delegate="save()">
       <i class="material-icons mdc-button__icon">send</i>
       Submit
     </button>
