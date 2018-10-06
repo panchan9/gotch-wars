@@ -2,7 +2,7 @@ import { autoinject } from 'aurelia-framework';
 import { getLogger } from 'aurelia-logging';
 import * as firebase from 'firebase/app';
 import * as firebaseui from 'firebaseui';
-import { AuthenticationService } from './authentication';
+import { AuthService } from './auth';
 import { Router, NavigationInstruction } from 'aurelia-router';
 
 @autoinject
@@ -26,7 +26,7 @@ export class AuthenticationUI {
   };
   private ui: firebaseui.auth.AuthUI;
 
-  constructor(private auth: AuthenticationService, private router: Router) {
+  constructor(private auth: AuthService, private router: Router) {
     this.ui = new firebaseui.auth.AuthUI(this.auth.auth);
   }
 

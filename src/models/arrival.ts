@@ -1,9 +1,10 @@
-import { IDocObject } from 'services/firebase/firestore';
+import { IDocObject, FirestoreService } from 'services/firebase/firestore';
 import { DateService } from 'services/date';
 
 export class Arrival {
 
-  userId = '';
+  id: string;
+  uid = '';
   arrivedAt: Date;
   createdAt: Date;
 
@@ -17,10 +18,13 @@ export class Arrival {
   }
 
   static fromObject(obj: IDocObject): Arrival {
-    return Object.assign(
+    const arrival = Object.assign(
       new Arrival(),
-      obj
+      FirestoreService.castTimestampToDate(obj, ['arrivedAt']),
     );
+    arrival.date = arrival.arrivedDate;
+    arrival.time = arrival.arrivedTime;
+    return arrival;
   }
 
   toObject() {
@@ -31,7 +35,6 @@ export class Arrival {
     if (this.date && this.time) {
       obj.arrivedAt = new Date(this.date + ' ' + this.time);
     } else {
-      console.log('setttt')
       obj.arrivedAt = new Date();
     }
     return obj;
@@ -42,7 +45,6 @@ export class Arrival {
   }
 
   set arrivedDate(val: string) {
-    console.log('set date', val)
     this.date = val;
   }
 
@@ -51,7 +53,6 @@ export class Arrival {
   }
 
   set arrivedTime(val: string) {
-    console.log('set time', val)
     this.time = val;
   }
 }

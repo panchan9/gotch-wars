@@ -14,7 +14,7 @@ const when = (condition, config, negativeConfig) =>
   condition ? ensureArray(config) : ensureArray(negativeConfig);
 
 // primary config:
-const title = 'Aurelia Navigation Skeleton';
+const title = 'Gotch Wars';
 const outDir = path.resolve(__dirname, project.platform.output);
 const srcDir = path.resolve(__dirname, 'src');
 const nodeModulesDir = path.resolve(__dirname, 'node_modules');
@@ -119,7 +119,11 @@ module.exports = ({production, server, extractCss, coverage, analyze, karma} = {
       allChunks: true
     })),
     ...when(production || server, new CopyWebpackPlugin([
-      { from: 'static', to: outDir }])),
+      { from: 'static', to: outDir },
+      { from: 'favicon.ico', to: outDir },
+      { from: 'app-icon192x192.png', to: outDir },
+      { from: 'app-icon192x192.png', to: outDir },
+    ])),
     ...when(analyze, new BundleAnalyzerPlugin())
   ]
 });

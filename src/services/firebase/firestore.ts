@@ -78,13 +78,21 @@ export class FirestoreService {
     return docId;
   }
 
+  static castTimestampToDate(docObj: IDocData, keys: string[]) {
+    const obj = Object.assign({}, docObj);
+    keys.forEach(key => {
+      obj[key] = docObj[key].toDate();
+    });
+    return obj;
+  }
 
   /**
    * Helper functions
    */
 
   private toObject(docId: string, docData: DocumentData): IDocObject {
-    return Object.assign({}, { id: docId }, docData);
+    const obj = FirestoreService.castTimestampToDate(docData, ['createdAt']);
+    return Object.assign({}, { id: docId }, obj);
   }
 
   private toDoc(object: IDocData | IDocObject): IDocData {
