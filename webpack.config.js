@@ -122,7 +122,9 @@ module.exports = ({production, server, extractCss, coverage, analyze, karma} = {
       { from: 'static', to: outDir },
       { from: 'favicon.ico', to: outDir },
       { from: 'app-icon192x192.png', to: outDir },
-      { from: 'app-icon192x192.png', to: outDir },
+      { from: 'apple-touch-icon152x152.png', to: outDir },
+      { from: 'manifest.json', to: outDir },
+      { from: 'service-worker.js', to: outDir },
     ])),
     ...when(analyze, new BundleAnalyzerPlugin())
   ]

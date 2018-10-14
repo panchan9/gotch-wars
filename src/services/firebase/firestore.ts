@@ -35,7 +35,7 @@ export class FirestoreService {
    * Read functions
    */
 
-  public async fetchCollection(): Promise<IDocObject[]> {
+  async fetchCollection(): Promise<IDocObject[]> {
     const snapshot = await this.collectionRef.get();
     const arr: IDocObject[] = [];
 
@@ -45,7 +45,7 @@ export class FirestoreService {
     return arr;
   }
 
-  public async fetchDocument(docId: string): Promise<IDocObject> {
+  async fetchDocument(docId: string): Promise<IDocObject> {
     const snapshot = await this.collectionRef.doc(docId).get();
     if (!snapshot.exists) {
       throw new Error(`No document id: ${docId}`);
@@ -53,7 +53,7 @@ export class FirestoreService {
     return this.toObject(snapshot.id, snapshot.data() || {});
   }
 
-  public async fetchByQuery(query: Query): Promise<IDocObject[]> {
+  async fetchByQuery(query: Query): Promise<IDocObject[]> {
     const snapshot = await query.get();
     const arr: IDocObject[] = [];
 
@@ -67,13 +67,13 @@ export class FirestoreService {
    * Update functions
    */
 
-  public async add(object: IDocData | IDocObject): Promise<IDocObject> {
-  const doc = this.toDoc(Object.assign(object, { createdAt: new Date() }));
-  const docRef = await this.collectionRef.add(doc);
-  return this.fetchDocument(docRef.id);
+  async add(object: IDocData | IDocObject): Promise<IDocObject> {
+    const doc = this.toDoc(Object.assign(object, { createdAt: new Date() }));
+    const docRef = await this.collectionRef.add(doc);
+    return this.fetchDocument(docRef.id);
   }
 
-  public async delete(docId: string) {
+  async delete(docId: string) {
     await this.collectionRef.doc(docId).delete();
     return docId;
   }
