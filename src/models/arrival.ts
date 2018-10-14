@@ -1,5 +1,6 @@
 import { IDocObject, FirestoreService } from 'services/firebase/firestore';
 import { DateService } from 'services/date';
+import { endOfMinute, isAfter, differenceInMinutes } from 'date-fns';
 
 export class Arrival {
 
@@ -10,6 +11,7 @@ export class Arrival {
 
   private date: string;
   private time: string;
+  gotchPoint: number;
 
   constructor() {
     this.arrivedAt = new Date();
@@ -24,6 +26,8 @@ export class Arrival {
     );
     arrival.date = arrival.arrivedDate;
     arrival.time = arrival.arrivedTime;
+
+    arrival.gotchPoint = Arrival.calculateGotch(arrival.arrivedAt);
     return arrival;
   }
 
@@ -38,6 +42,25 @@ export class Arrival {
       obj.arrivedAt = new Date();
     }
     return obj;
+  }
+
+  static calculateGotch(arrivedAt: Date): number {
+    const [hh, mm] = [ 7, 0 ];
+    const interval = 30;
+
+    const limit = endOfMinute(new Date(
+      arrivedAt.getFullYear(),
+      arrivedAt.getMonth(),
+      arrivedAt.getDate(),
+      hh,
+      mm,
+    ));
+
+    if (isAfter(arrivedAt, limit)) {
+      const diff = differenceInMinutes(arrivedAt, limit);
+      return 1 + Math.floor(diff / interval);
+    }
+    return 0;
   }
 
   get arrivedDate(): string {
@@ -55,4 +78,5 @@ export class Arrival {
   set arrivedTime(val: string) {
     this.time = val;
   }
+
 }

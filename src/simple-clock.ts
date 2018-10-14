@@ -19,7 +19,7 @@ export class SimpleClock {
   circles: { [index: string]: RadialBar };
 
   // To dispose timer function and release memory
-  timerId: number;
+  timerId: NodeJS.Timeout;
   animationId: number;
 
   constructor(private element: Element) { }

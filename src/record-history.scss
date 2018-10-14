@@ -64,7 +64,36 @@
       text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
       text-align: center;
       border-right: 1px solid #C1C3D1;
-    }
-  }
+      position: relative;
 
+      span.gotch-point {
+        position: absolute;
+        right: 2px;
+        top: 0px;
+        font-size: 16px;
+        color: #F99695;
+        text-shadow: 0 0 20px #FA776D,
+                     0 0 40px #F99695,
+                     0 0 60px #F99695,
+                     0 0 80px #F99695;
+
+        i {
+          font-size: 12px;
+          margin-right: -4px;
+        }
+      }
+
+    }
+
+    tr.sum-of-gotch-point {
+      td {
+        color: #FFC530;
+        font-size: 24px;
+        font-weight: 700;
+        background-color: #424250;
+        text-shadow: 0 0 20px #FFF6D1;
+      }
+    }
+
+  }
 }

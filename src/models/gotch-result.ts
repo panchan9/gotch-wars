@@ -1,11 +1,6 @@
-import { IDocObject } from 'services/firebase/firestore';
-import { User } from './user';
-import { Arrival } from './arrival';
 import { UserHistory } from './user-history';
-import { Container } from 'aurelia-framework';
 import { DateService } from 'services/date';
-import { getLogger } from 'aurelia-logging';
-import { addDays, startOfDay, isEqual } from 'date-fns';
+import { startOfDay, isEqual } from 'date-fns';
 
 export class GotchResult {
 

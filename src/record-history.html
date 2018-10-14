@@ -19,7 +19,21 @@
         <tbody>
           <tr repeat.for="date of gotch.calendarDates">
             <td>${date.getDate()}</td>
-            <td repeat.for="h of gotch.userHistories">${h.getArrivalTime(date)}</td>
+            <td repeat.for="h of gotch.userHistories">
+              <let arrival.bind="h.getArrival(date)"></let>
+              ${arrival.arrivedTime.slice(0, 5)}
+              <span class="gotch-point" if.bind="arrival.gotchPoint > 0">
+                <i class="material-icons">local_dining</i>
+                ${arrival.gotchPoint}
+              </span>
+            </td>
+          </tr>
+
+          <tr class="sum-of-gotch-point">
+            <td>GP</td>
+            <td repeat.for="h of gotch.userHistories">
+              ${h.sumGotchPoint()}
+            </td>
           </tr>
         </tbody>
       </table>
