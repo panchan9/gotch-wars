@@ -29,7 +29,7 @@ export class UserHistory {
     if (times.length > 1) {
       console.warn('Duplicated arrival times are registered:', times);
     }
-    return times[0];
+    return times[0].slice(0, 5);
   }
 
   getStartAndEndDate() {

@@ -31,4 +31,19 @@ export class FunctionsService {
         throw err;
       });
   }
+
+  async registerArrival(obj: any) {
+    this.logger.debug('registerArrival', obj);
+    const callable = this.functions.httpsCallable('registerArrival');
+
+    // FIXME: https://github.com/firebase/firebase-functions/issues/316
+    obj.arrivedAt = obj.arrivedAt.toISOString();
+
+    return callable(obj)
+      .then(result => result.data)
+      .catch((err: functions.HttpsError) => {
+        this.logger.error(err.code, err.message);
+        throw err;
+      });
+  }
 }

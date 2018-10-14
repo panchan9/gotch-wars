@@ -8,5 +8,15 @@ mdc-drawer-temporary {
   // padding: 16px 16px 0 16px;
 }
 
-.mdc-drawer-spacer {
+#navigation-drawer {
+  display: grid;
+  grid-template-rows: 1fr auto;
+
+  #drawer-spacer {
+    height: 100%;
+  }
+
+  #drawer-list {
+    z-index: 16;
+  }
 }

@@ -23,15 +23,7 @@ export class App {
     config.map([
       {
         route: '',
-        name: 'welcome',
-        moduleId: PLATFORM.moduleName('welcome.html'),
-        title: 'Welcom to Gotch Wars',
-      },
-      {
-        route: 'login',
-        name: 'login',
-        moduleId: PLATFORM.moduleName('login'),
-        title: 'Login',
+        redirect: 'record/history',
       },
       {
         route: 'admin',

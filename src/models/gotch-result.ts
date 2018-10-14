@@ -5,6 +5,7 @@ import { UserHistory } from './user-history';
 import { Container } from 'aurelia-framework';
 import { DateService } from 'services/date';
 import { getLogger } from 'aurelia-logging';
+import { addDays, startOfDay, isEqual } from 'date-fns';
 
 export class GotchResult {
 
@@ -17,20 +18,22 @@ export class GotchResult {
   //   );
   // }
 
-  static fromArrivals(hist: UserHistory[]) {
-    const logger = getLogger(GotchResult.name);
-
-    const allDates = hist
-      .map(h => h.arrivals.map(a => a.arrivedAt))
+  static fromArrivals(histories: UserHistory[]) {
+    const allDates = histories
+      .map(h => h.arrivals.map(a => startOfDay(a.arrivedAt)))
+      // concat each array of Arrivals
       .reduce((d1, d2) => d1.concat(d2));
 
-    const sortedDates = DateService.sortDates(allDates);
     const result = new GotchResult();
-    result.userHistories = hist;
+    result.userHistories = histories;
 
-    for (let i = 0, len = sortedDates.length; i < len; i++) {
-      result.calendarDates.push(DateService.addDays(sortedDates[0], i));
+    const uniqueDates: Date[] = [];
+    for (const d of allDates) {
+      if (!uniqueDates.find(ud => isEqual(ud, d))) {
+        uniqueDates.push(d);
+      }
     }
+    result.calendarDates = DateService.sortDates(uniqueDates);
 
     return result;
   }

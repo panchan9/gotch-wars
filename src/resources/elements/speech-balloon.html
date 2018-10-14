@@ -1,0 +1,36 @@
+<template>
+  <style>
+    .speech-balloon {
+      position: relative;
+      padding: 20px;
+      display: inline-block;
+      height: 50px;
+      line-height: 50px;
+      font-size: 20px;
+      font-weight: 500;
+      text-align: center;
+      border-radius: 50%;
+      color: aquamarine;
+      background-color: #a58eff;
+      box-shadow: 4px 4px 10px 0 #a7a7a7;
+    }
+
+    .speech-balloon::before {
+      content: '';
+      position: absolute;
+      display: block;
+      widows: 0;
+      height: 0;
+      left: 2px;
+      bottom: 2px;
+      border-right: 20px solid #a58eff;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      transform: rotate(-45deg);
+    }
+  </style>
+
+  <div class="speech-balloon">
+    <slot></slot>
+  </div>
+</template>

@@ -1,16 +1,36 @@
 <template>
-  <h1>History of Morning Prcatice</h1>
-    <button mdc-button="raised: true; stroked: true; compact: true"
-            disabled.bind="disabled" click.delegate="save()">
-      <i class="material-icons mdc-button__icon">send</i>
-      Submit
-    </button>
+  <require from="./record-history.scss"></require>
 
-  <table>
-    <thead>
+  <article id="record-history">
+    <header>
+      <h1>History of Morning Practice</h1>
+    </header>
+
+    <section>
       <table>
-        <th></th>
+        <thead>
+          <th class="date">
+            <i class="material-icons">date_range</i>
+          </th>
+          <th repeat.for="h of gotch.userHistories">
+            <img src.bind="h.user.photoUrl" alt="Photo">
+          </th>
+        </thead>
+        <tbody>
+          <tr repeat.for="date of gotch.calendarDates">
+            <td>${date.getDate()}</td>
+            <td repeat.for="h of gotch.userHistories">${h.getArrivalTime(date)}</td>
+          </tr>
+        </tbody>
       </table>
-    </thead>
-  </table>
+    </section>
+
+    <a route-href="route: record-keeper;">
+      <button mdc-fab="aria-label: Register;" id="fab"
+          >
+        av_timer
+      </button>
+    </a>
+  </article>
+
 </template>

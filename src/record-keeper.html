@@ -2,12 +2,15 @@
   <require from="./record-keeper.scss"></require>
   <require from="./simple-clock"></require>
 
-  <article class="container au-animate">
-    <h1>Record Today's Morning Practice!!</h1>
+  <article id="record-keeper" class="au-animate">
+    <header>
+      <h1>Register Today's Record!!</h1>
+    </header>
 
     <simple-clock></simple-clock>
 
-    <button mdc-fab class="material-icons md-120" click.delegate="showDialog()">
+    <button mdc-fab class="material-icons md-120" id="fab"
+        disabled.bind="isLoading" click.delegate="showDialog()">
       done_outline
     </button>
   </article>

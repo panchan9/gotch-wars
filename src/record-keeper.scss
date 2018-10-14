@@ -1,7 +1,11 @@
-.container {
+#record-keeper {
   display: grid;
   // grid-template-columns:
-  justify-items: center;
   grid-template-columns: 1fr;
   grid-template-rows: auto auto 1fr;
+  row-gap: 24px;
+
+  simple-clock {
+    justify-self: center;
+  }
 }

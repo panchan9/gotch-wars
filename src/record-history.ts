@@ -1,15 +1,47 @@
 import { ArrivalStore } from 'services/firebase/firestore-collections/arrival-store';
 import { autoinject } from 'aurelia-framework';
 import { Arrival } from 'models/arrival';
+import { getLogger } from 'aurelia-logging';
+import { AuthService } from 'services/firebase/auth';
+import { User } from 'models/user';
+import { UserHistory } from 'models/user-history';
+import { GotchResult } from 'models/gotch-result';
+import { FunctionsService } from 'services/firebase/functions';
 
 @autoinject
 export class RecordHistory {
 
-  arrivals: Arrival[] = [];
+  private readonly logger = getLogger(RecordHistory.name);
 
-  constructor(private store: ArrivalStore) {}
+  arrivals: Arrival[] = [];
+  gotch: GotchResult;
+
+  constructor(
+    private store: ArrivalStore,
+    private auth: AuthService,
+    private api: FunctionsService,
+  ) {}
 
   async activate() {
     this.arrivals = await this.store.fetchAll();
+    // make unique UID list
+    const uids = Array.from(new Set(this.arrivals.map(a => a.uid)));
+
+    this.logger.debug('uids', uids)
+    const users = await this.api.fetchUsers(uids)
+      .catch(err => {
+        this.logger.error('Failed to load user info', err);
+        throw err;
+      });
+
+    this.logger.info('Loaded user info', users);
+
+    const userHistories = users.map(user => {
+      const arrivals = this.arrivals.filter(a => a.uid === user.uid);
+      return UserHistory.fromArrivals(arrivals, user);
+    });
+
+    this.gotch = GotchResult.fromArrivals(userHistories);
+    this.logger.debug('GotchResult', this.gotch);
   }
 }
