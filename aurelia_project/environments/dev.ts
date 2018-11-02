@@ -5,7 +5,7 @@ export default {
   // https://console.firebase.google.com/u/0/project/gotch-wars/settings/general/
   firebase: {
     apiKey: "AIzaSyDR9UhAuR-mom6CAlv2L6jvyZe7BTJkxV0",
-    authDomain: "gotch-wars.firebaseapp.com",
+    authDomain: "gotch-wars.pannpers.app",
     databaseURL: "https://gotch-wars.firebaseio.com",
     projectId: "gotch-wars",
     // storageBucket: "gotch-wars.appspot.com",

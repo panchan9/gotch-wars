@@ -11,6 +11,7 @@ import * as express from 'express';
 const app = express();
 const whitelist = [
   'http://localhost:9000',
+  'https://gotch-wars.pannpers.app',
   'https://gotch-wars.firebaseapp.com',
 ];
 
