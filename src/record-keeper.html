@@ -2,6 +2,9 @@
   <require from="./record-keeper.scss"></require>
   <require from="./simple-clock"></require>
 
+  <mdc-linear-progress open.bind="isLoading" indeterminate="true" buffer.bind="0.3">
+  </mdc-linear-progress>
+
   <article id="record-keeper" class="au-animate">
     <header>
       <h1>Register Today's Record!!</h1>
@@ -10,7 +13,7 @@
     <simple-clock></simple-clock>
 
     <button mdc-fab class="material-icons md-120" id="fab"
-        disabled.bind="isLoading" click.delegate="showDialog()">
+        exited.bind="isLoading" click.delegate="showDialog()">
       done_outline
     </button>
   </article>
@@ -28,4 +31,6 @@
       </warning-text>
     </p>
   </mdc-dialog>
+
+  <!-- mdc-dialog[] -->
 </template>

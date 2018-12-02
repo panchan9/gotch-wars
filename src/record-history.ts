@@ -13,14 +13,21 @@ export class RecordHistory {
 
   arrivals: Arrival[] = [];
   gotch: GotchResult;
+  isLoading = false;
 
   constructor(
     private store: ArrivalStore,
     private api: FunctionsService,
   ) {}
 
-  async activate() {
-    this.arrivals = await this.store.fetchAll();
+  activate() {
+    this.isLoading = true;
+  }
+
+  async attached() {
+    // this.arrivals = await this.store.fetchAll();
+    this.arrivals = await this.store.fetchByPastMonth(0);
+
     // make unique UID list
     const uids = Array.from(new Set(this.arrivals.map(a => a.uid)));
 
@@ -41,5 +48,7 @@ export class RecordHistory {
 
     this.gotch = GotchResult.fromArrivals(userHistories);
     this.logger.debug('GotchResult', this.gotch);
+
+    this.isLoading = false;
   }
 }

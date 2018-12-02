@@ -7,6 +7,12 @@ import * as Bluebird from 'bluebird';
 import 'material-components-web';
 import { getLogger } from 'aurelia-logging';
 import { ConfigBuilder } from 'aurelia-mdc-bridge';
+import { FirebaseService } from 'services/firebase/firebase';
+import { AuthService } from 'services/firebase/auth';
+import { BindingSignaler } from 'aurelia-templating-resources';
+import * as firebase from 'firebase/app';
+import { FirestoreService } from 'services/firebase/firestore';
+import { FunctionsService } from 'services/firebase/functions';
 
 // Use Icons and Web Font as self-hosting
 // https://medium.com/@daddycat/using-offline-material-icons-and-roboto-font-in-electron-app-f25082447443
@@ -41,6 +47,19 @@ export async function configure(aurelia: Aurelia) {
   if (environment.testing) {
     aurelia.use.plugin(PLATFORM.moduleName('aurelia-testing'));
   }
+
+  // Initialize Firebase services
+  const firebaseSvc = new FirebaseService(firebase.initializeApp(environment.firebase));
+  aurelia.container.registerInstance(FirebaseService, firebaseSvc);
+
+  // Instantiate each Firebase Services
+  const signaler = aurelia.container.invoke(BindingSignaler) as BindingSignaler;
+  aurelia.container.registerInstance(AuthService, new AuthService(firebaseSvc.app.auth(), signaler));
+  aurelia.container.registerInstance(FirestoreService, new FirestoreService(firebaseSvc.app.firestore()));
+  // https://firebase.google.com/docs/functions/locations?hl=ja#http_and_client_callable_functions
+  aurelia.container.registerInstance(FunctionsService, new FunctionsService(firebaseSvc.app.functions('asia-northeast1')));
+
+
 
   await aurelia.start();
   await aurelia.setRoot(PLATFORM.moduleName('app'));

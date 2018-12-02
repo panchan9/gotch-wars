@@ -24,6 +24,7 @@ export class RecordKeeper {
   ) {}
 
   async activate() {
+    this.isLoading = true;
     const records =  await this.store.fetchByUid(this.auth.getUid())
       .catch(err => {
         this.logger.error('Failed to load all record of the user', err);
@@ -32,12 +33,13 @@ export class RecordKeeper {
 
     // cancel the navigation if today's record has been already registered.
     this.hasAlreadyRegistered = records.some(r => isToday(r.arrivedAt));
+    this.isLoading = false;
   }
 
   showDialog() {
     if (this.hasAlreadyRegistered) {
       this.snackbar.showAndHide({
-        message: `You've already registered today's record`
+        message: `Already registered today's record`,
       });
       return;
     }
@@ -60,6 +62,7 @@ export class RecordKeeper {
     this.logger.debug('registerTime', event);
     try {
       const arrival = await this.store.register(new Arrival());
+      this.hasAlreadyRegistered = true;
       this.logger.debug('registered', arrival);
 
       this.snackbar.showAndHide({ message: 'Registered!!' });

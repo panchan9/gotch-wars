@@ -1,6 +1,9 @@
 <template>
   <require from="./record-history.scss"></require>
 
+  <mdc-linear-progress open.bind="isLoading" indeterminate="true" buffer.bind="0.3">
+  </mdc-linear-progress>
+
   <article id="record-history">
     <header>
       <h1>History of Morning Practice</h1>

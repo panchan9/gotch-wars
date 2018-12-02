@@ -32,7 +32,6 @@ export class UserHistory {
     if (arrivals.length > 1) {
       console.warn('Duplicated arrival times are registered:', arrivals);
     }
-    console.debug(arrivals);
     return arrivals[0];
   }
 

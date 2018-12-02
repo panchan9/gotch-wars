@@ -1,22 +1,19 @@
 const CACHE_NAME = 'gotch-wars-cache';
 const offlineURL = '/';
-const installFilesEssential = [
+const installFiles = [
   '/',
+  '/index.html',
+  '/?utm_source=homescreen',
   '/manifest.json',
   '/app-icon192x192.png',
-].concat(offlineURL);
-const installFilesDesirable = [
   '/favicon.ico',
-  '/fetchUsers',
-]
+];
 
 function installStaticFiles() {
   return caches.open(CACHE_NAME).then(cache => {
     console.info('[ServiceWorker] Cache Opened');
-    // cache desirable files
-    cache.addAll(installFilesDesirable);
     // cache essential files
-    return cache.addAll(installFilesEssential);
+    return cache.addAll(installFiles);
   });
 }
 
@@ -26,12 +23,12 @@ function clearOldCache() {
       keylist
         .filter(key => key !== CACHE_NAME)
         .map(key => caches.delete(key))
-    );
+  );
   });
 }
 
 self.addEventListener('install', event => {
-  console.debug('[ServiceWorker] [Install]');
+  console.debug('[ServiceWorker] [INSTALL]');
   event.waitUntil(
     installStaticFiles()
       .then(() => self.skipWaiting())
@@ -39,7 +36,7 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', event => {
-  console.debug(`[ServiceWorker] [Activate]`);
+  console.debug(`[ServiceWorker] [ACTIVATE]`);
 
   event.waitUntil(
     clearOldCache()
@@ -49,15 +46,24 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
   const req = event.request;
-  console.debug(`[ServiceWorker] [Fetch] ${req.method}: ${req.url}`);
+  const url = new URL(req.url);
+  console.debug(`[ServiceWorker] [FETCH] ${req.method}: ${url.href}`);
   event.respondWith(
-    caches.match(event.request)
-      .then(resp => {
-        if (resp) {
-          console.info('[ServiceWorker] Return from cache', resp);
+    caches.match(event.request).then(resp => {
+      if (resp) {
+        console.info('[ServiceWorker] [FETCH] Cache used', resp);
+        return resp;
+      }
+      if (/^(app|vendor)\.[a-z0-9]+\.bundle\.js$/.test(url.pathname)) {
+        return fetch(req).then(resp => {
+          console.info(`[ServiceWorker] [FETCH] Add Cache`, url.pathname);
+          caches.open(CACHE_NAME)
+            .then(cache => cache.add(url.pathname));
+
           return resp;
-        }
-        return fetch(event.request);
-      })
+        });
+      }
+      return fetch(req);
+    })
   );
 });
