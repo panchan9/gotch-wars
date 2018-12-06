@@ -2,13 +2,15 @@ import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/functions';
-import environment from 'environment';
+// import environment from 'environment';
+import { getLogger } from 'aurelia-logging';
 
 export class FirebaseService {
 
-  app: firebase.app.App;
+  private readonly logger = getLogger(FirebaseService.name);
 
-  constructor() {
-    this.app = firebase.initializeApp(environment.firebase);
+  constructor(public app: firebase.app.App) {
+    this.logger.info('Initialize Firebase App');
+    // this.app = firebase.initializeApp(environment.firebase);
   }
 }

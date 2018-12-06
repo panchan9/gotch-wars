@@ -1,21 +1,19 @@
 import { autoinject } from 'aurelia-framework';
 import { getLogger } from 'aurelia-logging';
-import { FirebaseService } from './firebase';
+import * as firebase from 'firebase/app';
+import 'firebase/functions';
 import { functions } from 'firebase';
 import { User } from 'models/user';
-// import 'firebase/functions';
 
 @autoinject
 export class FunctionsService {
 
   private readonly logger = getLogger(FunctionsService.name);
-  private readonly region = 'asia-northeast1';
 
-  private functions: firebase.functions.Functions;
+  // private functions: firebase.functions.Functions;
 
-  constructor(private fb: FirebaseService) {
-    // https://firebase.google.com/docs/functions/locations?hl=ja#http_and_client_callable_functions
-    this.functions = this.fb.app.functions(this.region);
+  constructor(private functions: firebase.functions.Functions) {
+    this.logger.info('Initialize Firebase Functions');
   }
 
   async fetchUsers(uids: string[]): Promise<User[]> {

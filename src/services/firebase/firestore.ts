@@ -1,7 +1,9 @@
 import { autoinject } from 'aurelia-framework';
 import { getLogger } from 'aurelia-logging';
-import { FirebaseFirestore, CollectionReference, QueryDocumentSnapshot, DocumentData, Query } from '@firebase/firestore-types';
-import { FirebaseService } from './firebase';
+// import { FirebaseFirestore, CollectionReference, QueryDocumentSnapshot, DocumentData, Query, FieldValue } from '@firebase/firestore-types';
+import * as firebase from 'firebase/app';
+import 'firebase/firestore';
+// import { FirebaseFirestore, CollectionReference, QueryDocumentSnapshot, DocumentData, Query, FieldValue } from 'firebase/firestore';
 
 
 export interface IDocObject {
@@ -21,41 +23,48 @@ export class FirestoreService {
 
   private readonly logger = getLogger(FirestoreService.name);
 
-  store: FirebaseFirestore;
-  collectionRef: CollectionReference;
+  // store: firebase.firestore.Firestore;
+  // collectionRef: firebase.firestore.CollectionReference;
 
-  constructor(private firebase: FirebaseService, collectionPath: string) {
+  // constructor(public store: firebase.firestore.Firestore, collectionPath: string) {
+  constructor(private store: firebase.firestore.Firestore) {
     this.logger.debug('Initialize Firestore');
-    this.store = firebase.app.firestore();
+    // this.store = firebase.app.firestore();
     this.store.settings({ timestampsInSnapshots: true });
-    this.collectionRef = this.store.collection(collectionPath);
+    // this.collectionRef = this.store.collection(collectionPath);
+  }
+
+  getCollectionReference(domain: string): firebase.firestore.CollectionReference {
+    return this.store.collection(domain);
   }
 
   /**
    * Read functions
    */
 
-  async fetchCollection(): Promise<IDocObject[]> {
-    const snapshot = await this.collectionRef.get();
+  async fetchCollection(ref: firebase.firestore.CollectionReference): Promise<IDocObject[]> {
+    const snapshot = await ref.get();
     const arr: IDocObject[] = [];
 
-    snapshot.forEach((doc: QueryDocumentSnapshot) => {
+    snapshot.forEach((doc: firebase.firestore.QueryDocumentSnapshot) => {
       arr.push(this.toObject(doc.id, doc.data()));
     });
     return arr;
   }
 
-  async fetchDocument(docId: string): Promise<IDocObject> {
-    const snapshot = await this.collectionRef.doc(docId).get();
+  async fetchDocument(ref: firebase.firestore.CollectionReference, docId: string): Promise<IDocObject> {
+    const snapshot = await ref.doc(docId).get();
     if (!snapshot.exists) {
       throw new Error(`No document id: ${docId}`);
     }
     return this.toObject(snapshot.id, snapshot.data() || {});
   }
 
-  async fetchByQuery(query: Query): Promise<IDocObject[]> {
+  async fetchByQuery(query: firebase.firestore.Query): Promise<IDocObject[]> {
     const snapshot = await query.get();
     const arr: IDocObject[] = [];
+
+    this.logger.debug('fetchByQuery', query);
 
     snapshot.forEach(doc => {
       arr.push(this.toObject(doc.id, doc.data()));
@@ -67,14 +76,14 @@ export class FirestoreService {
    * Update functions
    */
 
-  async add(object: IDocData | IDocObject): Promise<IDocObject> {
-    const doc = this.toDoc(Object.assign(object, { createdAt: new Date() }));
-    const docRef = await this.collectionRef.add(doc);
-    return this.fetchDocument(docRef.id);
+  async add(ref: firebase.firestore.CollectionReference, object: IDocData | IDocObject): Promise<IDocObject> {
+    const doc = this.toDoc(Object.assign(object, { createdAt: firebase.firestore.FieldValue.serverTimestamp() }));
+    const docRef = await ref.add(doc);
+    return this.fetchDocument(ref, docRef.id);
   }
 
-  async delete(docId: string) {
-    await this.collectionRef.doc(docId).delete();
+  async delete(ref: firebase.firestore.CollectionReference, docId: string) {
+    await ref.doc(docId).delete();
     return docId;
   }
 
@@ -90,7 +99,7 @@ export class FirestoreService {
    * Helper functions
    */
 
-  private toObject(docId: string, docData: DocumentData): IDocObject {
+  private toObject(docId: string, docData: firebase.firestore.DocumentData): IDocObject {
     const obj = FirestoreService.castTimestampToDate(docData, ['createdAt']);
     return Object.assign({}, { id: docId }, obj);
   }

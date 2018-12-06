@@ -1,16 +1,18 @@
 /// <reference types="aurelia-loader-webpack/src/webpack-hot-interface"/>
 // we want font-awesome to load as soon as possible to show the fa-spinner
-import {Aurelia} from 'aurelia-framework';
+import {Aurelia, Container} from 'aurelia-framework';
 import environment from './environment';
 import {PLATFORM} from 'aurelia-pal';
 import * as Bluebird from 'bluebird';
 import 'material-components-web';
 import { getLogger } from 'aurelia-logging';
 import { ConfigBuilder } from 'aurelia-mdc-bridge';
-import { FirebaseService } from 'services/firebase/firebase';
 import { AuthService } from 'services/firebase/auth';
 import { BindingSignaler } from 'aurelia-templating-resources';
 import * as firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
+import 'firebase/functions';
 import { FirestoreService } from 'services/firebase/firestore';
 import { FunctionsService } from 'services/firebase/functions';
 
@@ -49,17 +51,9 @@ export async function configure(aurelia: Aurelia) {
   }
 
   // Initialize Firebase services
-  const firebaseSvc = new FirebaseService(firebase.initializeApp(environment.firebase));
-  aurelia.container.registerInstance(FirebaseService, firebaseSvc);
-
-  // Instantiate each Firebase Services
-  const signaler = aurelia.container.invoke(BindingSignaler) as BindingSignaler;
-  aurelia.container.registerInstance(AuthService, new AuthService(firebaseSvc.app.auth(), signaler));
-  aurelia.container.registerInstance(FirestoreService, new FirestoreService(firebaseSvc.app.firestore()));
-  // https://firebase.google.com/docs/functions/locations?hl=ja#http_and_client_callable_functions
-  aurelia.container.registerInstance(FunctionsService, new FunctionsService(firebaseSvc.app.functions('asia-northeast1')));
-
-
+  const firebaseApp = firebase.initializeApp(environment.firebase);
+  console.info(firebaseApp.auth())
+  initializeFirebaseServices(aurelia.container, firebaseApp);
 
   await aurelia.start();
   await aurelia.setRoot(PLATFORM.moduleName('app'));
@@ -85,6 +79,16 @@ export async function configure(aurelia: Aurelia) {
 
   // aurelia.container.registerInstance(HttpClient, httpClient);
 
+}
+
+function initializeFirebaseServices(container: Container, app: firebase.app.App): void {
+  console.debug(app);
+  const signaler = container.invoke(BindingSignaler) as BindingSignaler;
+  container.registerInstance(AuthService, new AuthService(app.auth(), signaler));
+
+  container.registerInstance(FirestoreService, new FirestoreService(app.firestore()));
+  // https://firebase.google.com/docs/functions/locations?hl=ja#http_and_client_callable_functions
+  container.registerInstance(FunctionsService, new FunctionsService(app.functions('asia-northeast1')));
 }
 
 function chooseMaterialDesignComponents(b: ConfigBuilder) {
