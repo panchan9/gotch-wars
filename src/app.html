@@ -2,11 +2,11 @@
   <require from="material-components-web/dist/material-components-web.css"></require>
   <require from="./app.scss"></require>
   <require from="./nav-bar"></require>
-  <require from="./login"></require>
 
-  <header>
+  <!-- for only Desktop-->
+  <!-- <header>
     <nav-bar></nav-bar>
-  </header>
+  </header> -->
 
 
   <mdc-linear-progress
@@ -14,15 +14,16 @@
     open.bind="true"
     indeterminate.bind="true"
     buffer.bind="0.6"
-    class="linear-progress-secondary">
+    class="linear-progress">
   </mdc-linear-progress>
 
 
   <main>
-    <article>
-      <router-view if.bind="auth.isLoggedIn"></router-view>
-
-      <login else></login>
-    </article>
+    <router-view></router-view>
   </main>
+
+  <!-- https://material.io/design/components/app-bars-bottom.html#behavior -->
+  <footer>
+    <nav-bar></nav-bar>
+  </footer>
 </template>

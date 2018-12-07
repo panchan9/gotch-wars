@@ -24,14 +24,14 @@ export class App {
       {
         route: '',
         name: 'welcome',
-        moduleId: PLATFORM.moduleName('welcome.html'),
-        title: 'Welcom to Gotch Wars',
+        moduleId: PLATFORM.moduleName('welcome'),
+        title: 'Welcome to Gotch Wars',
       },
       {
-        route: 'login',
-        name: 'login',
-        moduleId: PLATFORM.moduleName('login'),
-        title: 'Login',
+        route: 'sign-in',
+        name: 'sign-in',
+        moduleId: PLATFORM.moduleName('sign-in'),
+        title: 'Sign In to Gotch Wars'
       },
       {
         route: 'admin',

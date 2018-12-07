@@ -82,7 +82,8 @@ module.exports = ({production, server, extractCss, coverage, analyze, karma} = {
         issuer: /\.html?$/i
       },
       { test: /\.html$/i, loader: 'html-loader' },
-      { test: /\.tsx?$/, loader: "ts-loader" },
+      // { test: /\.tsx?$/, loader: "ts-loader" },
+      { test: /\.ts$/, loader: "ts-loader" },
       // use Bluebird as the global Promise implementation:
       { test: /[\/\\]node_modules[\/\\]bluebird[\/\\].+\.js$/, loader: 'expose-loader?Promise' },
       // embed small images and fonts as Data Urls and larger ones as files:
@@ -109,6 +110,10 @@ module.exports = ({production, server, extractCss, coverage, analyze, karma} = {
     }),
     new HtmlWebpackPlugin({
       template: 'index.ejs',
+      minify: production ? {
+        removeComments: true,
+        collapseWhitespace: true
+      } : undefined,
       metadata: {
         // available in index.ejs //
         title, server, baseUrl
@@ -122,7 +127,9 @@ module.exports = ({production, server, extractCss, coverage, analyze, karma} = {
       { from: 'static', to: outDir },
       { from: 'favicon.ico', to: outDir },
       { from: 'app-icon192x192.png', to: outDir },
-      { from: 'app-icon192x192.png', to: outDir },
+      { from: 'apple-touch-icon152x152.png', to: outDir },
+      { from: 'manifest.json', to: outDir },
+      { from: 'service-worker.js', to: outDir },
     ])),
     ...when(analyze, new BundleAnalyzerPlugin())
   ]

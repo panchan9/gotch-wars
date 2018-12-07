@@ -4,42 +4,46 @@
   <mdc-linear-progress open.bind="isLoading" indeterminate="true" buffer.bind="0.3">
   </mdc-linear-progress>
 
-  <h1>Register Arrival Record</h1>
+  <article id="record-history">
+    <header>
+      <h1>Register Arrival Record</h1>
+    </header>
 
-  <form class="form-group">
-    <mdc-switch checked.bind="isNewUser"
-        label-on="New User" label-off="Select Existing User">
-    </mdc-switch>
+    <form class="form-group">
+      <mdc-switch checked.bind="isNewUser"
+          label-on="New User" label-off="Select Existing User">
+      </mdc-switch>
 
-    <mdc-select value.bind="arrival.uid" if.bind="!isNewUser"
-        label-text="UID" box="true" disabled.bind="isLoading">
-      <mdc-list-item repeat.for="user of users" model.bind="user.uid">
-        ${user.name}
-      </mdc-list-item>
-    </mdc-select>
+      <mdc-select value.bind="arrival.uid" if.bind="!isNewUser"
+          label-text="UID" box="true" disabled.bind="isLoading">
+        <mdc-list-item repeat.for="user of users" model.bind="user.uid">
+          ${user.name}
+        </mdc-list-item>
+      </mdc-select>
 
-    <mdc-text-field value.bind="arrival.uid" if.bind="isNewUser"
-        outlined="true" focused="true" required="true">
-      <i slot="leading-icon" class="material-icons">person</i>
-      User ID
-    </mdc-text-field>
+      <mdc-text-field value.bind="arrival.uid" if.bind="isNewUser"
+          outlined="true" focused="true" required="true">
+        <i slot="leading-icon" class="material-icons">person</i>
+        User ID
+      </mdc-text-field>
 
-    <mdc-text-field value.bind="arrival.arrivedDate" type="date"
-        placeholder="Created At" outlined="true" required="true">
-      <i slot="leading-icon" class="material-icons">event</i>
-      Created At
-    </mdc-text-field>
+      <mdc-text-field value.bind="arrival.arrivedDate" type="date"
+          placeholder="Created At" outlined="true" required="true">
+        <i slot="leading-icon" class="material-icons">event</i>
+        Created At
+      </mdc-text-field>
 
-    <mdc-text-field value.bind="arrival.arrivedTime"
-        type="time" step="1" placeholder="Created Time"
-        outline="true" required="true">
-      <i slot="leading-icon" class="material-icons">schedule</i>
-    </mdc-text-field>
+      <mdc-text-field value.bind="arrival.arrivedTime"
+          type="time" step="1" placeholder="Created Time"
+          outline="true" required="true">
+        <i slot="leading-icon" class="material-icons">schedule</i>
+      </mdc-text-field>
 
-    <button mdc-button="raised.bind: true; stroked.bind: true;"
-            disabled.bind="isLoading" click.delegate="save()">
-      <i class="material-icons mdc-button__icon">send</i>
-      Submit
-    </button>
-  </form>
+      <button mdc-button="raised.bind: true; stroked.bind: true;"
+              disabled.bind="isLoading" click.delegate="save()">
+        <i class="material-icons mdc-button__icon">send</i>
+        Submit
+      </button>
+    </form>
+  </article>
 </template>

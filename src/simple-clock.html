@@ -2,35 +2,47 @@
   <!-- <require from="./simple-clock.scss"></require> -->
 
   <style>
-    body{
-      background:hsl(50,20%,93%);
-      margin:0;
+
+    #simple-clock-container{
+      display: grid;
+      grid-template-columns: auto;
+      grid-template-rows: auto;
+      justify-items: center;
+      align-items: center;
+      height: 100vw;
     }
 
-    canvas{
-      display:block;
-      width:100%;
-      height:100%;
-    }
-
-    #clock-container{
-      position: absolute;
-      left: 50%;
-      top: 65%;
-      transform: translate(-50%,-50%);
+    #time-text {
+      grid-column: 1;
+      grid-row: 1;
       font-size: 56px;
       font-weight: 300;
       color: hsl(0,0%,25%);
-      display: flex;
+
+      display: grid;
+      grid-auto-flow: column;
+      column-gap: 4px;
     }
+
+    canvas{
+      grid-column: 1;
+      grid-row: 1;
+      display: block;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
   </style>
 
 
-  <div id="clock-container">
-    <span class="time" id="H"></span>
-    <span class="delim">:</span>
-    <span class="time" id="M"></span>
-    <span class="delim">:</span>
-    <span class="time" id="S"></span>
+  <div id="simple-clock-container">
+    <div id="time-text">
+      <span class="time" id="H"></span>
+      <span class="delim">:</span>
+      <span class="time" id="M"></span>
+      <span class="delim">:</span>
+      <span class="time" id="S"></span>
+    </div>
   </div>
 </template>

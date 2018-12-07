@@ -16,7 +16,7 @@ export class User {
         uid: obj.uid,
         name: obj.displayName,
         email: obj.email,
-        photoUrl: obj.photoUrl,
+        photoUrl: obj.photoURL,
       },
     );
   }

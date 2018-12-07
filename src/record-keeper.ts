@@ -5,31 +5,55 @@ import { ArrivalStore } from 'services/firebase/firestore-collections/arrival-st
 import { autoinject } from 'aurelia-framework';
 import { SnackbarService } from 'services/snackbar';
 import { Arrival } from 'models/arrival';
+import { AuthService } from 'services/firebase/auth';
+import { isToday } from 'date-fns';
 
 @autoinject
 export class RecordKeeper {
 
   private readonly logger = getLogger(RecordKeeper.name);
-  private dialog: MdcDialog;
+  dialog: MdcDialog;
+  isLoading = false;
+  hasAlreadyRegistered = false;
 
   constructor(
     private router: Router,
+    private auth: AuthService,
     private store: ArrivalStore,
     private snackbar: SnackbarService,
   ) {}
 
-  activate() {
+  async activate() {
+    this.isLoading = true;
+    const records =  await this.store.fetchByUid(this.auth.getUid())
+      .catch(err => {
+        this.logger.error('Failed to load all record of the user', err);
+        return Promise.reject(err);
+      });
 
+    // cancel the navigation if today's record has been already registered.
+    this.hasAlreadyRegistered = records.some(r => isToday(r.arrivedAt));
+    this.isLoading = false;
   }
 
   showDialog() {
+    if (this.hasAlreadyRegistered) {
+      this.snackbar.showAndHide({
+        message: `Already registered today's record`,
+      });
+      return;
+    }
+    this.isLoading = true;
     this.dialog.show(true);
   }
 
   async onDialogClick(event: IMdcDialogClickEvent) {
     // do nothing if clicked 'cancel'
     this.logger.debug('dialog', event);
-    if (!event.detail) return;
+    if (!event.detail) {
+      this.isLoading = false;
+      return;
+    }
 
     await this.registerTime();
   }
@@ -38,8 +62,11 @@ export class RecordKeeper {
     this.logger.debug('registerTime', event);
     try {
       const arrival = await this.store.register(new Arrival());
+      this.hasAlreadyRegistered = true;
       this.logger.debug('registered', arrival);
+
       this.snackbar.showAndHide({ message: 'Registered!!' });
+      this.router.navigateToRoute('record-history');
 
     } catch (err) {
       this.logger.error('failed to register: ', err);
@@ -48,7 +75,9 @@ export class RecordKeeper {
         actionText: 'Retry',
         actionHandler: () => { this.showDialog(); },
       });
-      return;
+
+    } finally {
+      this.isLoading = false;
     }
   }
 

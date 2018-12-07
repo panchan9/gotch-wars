@@ -19,7 +19,7 @@ export class FirestoreService {
     return this.addNewDoc(CollectionTypes.Arrival, arrival)
       .then(docRef => {
         console.info(`New Arrival Registered with ID: ${docRef.id}`);
-        return docRef.id;
+        return Object.assign(docRef.get(), { id: docRef.id});
       })
       .catch(err => {
         console.error('Failed to register Arrival:', arrival);

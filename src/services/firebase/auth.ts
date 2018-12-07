@@ -2,35 +2,24 @@ import { autoinject } from 'aurelia-framework';
 import { BindingSignaler } from 'aurelia-templating-resources';
 import { getLogger } from 'aurelia-logging';
 import * as firebase from 'firebase/app';
-import { FirebaseService } from './firebase';
 
 @autoinject
 export class AuthService {
 
   private readonly logger = getLogger(AuthService.name);
 
-  auth: firebase.auth.Auth;
   isLoggedIn = false;
   isAdmin = false;
 
   constructor(
-    private fb: FirebaseService,
+    public auth: firebase.auth.Auth,
     private signaler: BindingSignaler,
   ) {
-    this.auth = this.fb.app.auth();
+    this.logger.info('Initialize Firebase Authentication');
     // Exisiting and future Auth states are persisted even on
     // other browser tab or window unless the user explicitly sign out.
     // https://firebase.google.com/docs/auth/web/auth-state-persistence?hl=ja
     // this.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-    this.logger.info('Initialize Authentication');
-
-    this.auth.onAuthStateChanged(user => {
-      this.logger.info('Auth Stage Changed', user);
-      this.updateUserStatus(user)
-        .then(() => {
-          this.signaler.signal('auth:state:changed');
-        });
-    });
   }
 
   async updateUserStatus(user: firebase.User | null) {
@@ -44,6 +33,7 @@ export class AuthService {
       this.isAdmin = false;
     }
 
+    this.signaler.signal('auth:state:changed');
   }
 
   logout() {

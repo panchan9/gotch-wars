@@ -10,7 +10,8 @@ import { HttpsError } from 'firebase-functions/lib/providers/https';
 import * as express from 'express';
 const app = express();
 const whitelist = [
-  'http://localhost:9000',
+  'http://localhost:1217',
+  'https://gotch-wars.pannpers.app',
   'https://gotch-wars.firebaseapp.com',
 ];
 
@@ -34,21 +35,6 @@ admin.initializeApp({
 const firestore = new FirestoreService(admin.firestore());
 
 const tokyo = 'asia-northeast1';
-
-export const notifySlack = functions
-  // https://firebase.google.com/docs/functions/locations?hl=ja#best_practices_for_changing_region
-  .region(tokyo)
-  .https.onRequest(async (request, response) => {
-    const slack = new SlackService();
-    const username = 'パンディー';
-    try {
-      await slack.post(username);
-    } catch (err) {
-      console.error('Failed to send notification to Slack', err);
-      response.status(500).send('Failed');
-    }
-    response.send("Hello from Firebase!");
-  });
 
 export const fetchUsers = functions
   .region(tokyo)
@@ -98,18 +84,30 @@ export const registerArrival = functions
     }
     console.info('Request body:', data);
 
-    const id = await firestore.addArrival(data)
+    const newArrival = await firestore.addArrival(data)
       .catch(err => {
         console.error('Failed to register Arrival:\n', err);
         throw new HttpsError('invalid-argument', err);
       });
 
-    const user = await admin.auth().getUser(data.uid);
-    const slack = new SlackService();
-    await slack.post(user.displayName)
-      .catch(err => { throw new HttpsError('internal', err); });
+    return newArrival;
+  });
 
-    return id;
+export const notifySlack = functions
+  // https://firebase.google.com/docs/functions/locations?hl=ja#best_practices_for_changing_region
+  .region(tokyo)
+  .firestore.document('arrival/{id}')
+  .onCreate(async (snap, context) => {
+    const arrival = snap.data();
+
+    const user = await admin.auth().getUser(arrival.uid);
+
+    const slack = new SlackService();
+    try {
+      await slack.post(user.displayName);
+    } catch (err) {
+      console.error('Failed to send notification to Slack', err);
+    }
   });
 
 

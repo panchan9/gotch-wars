@@ -6,17 +6,17 @@
     <mdc-toolbar-row>
       <mdc-toolbar-section start="true">
         <a click.delegate="toggleMenu()" class="material-icons mdc-toolbar__menu-icon">menu</a>
-        <mdc-toolbar-title>Gotch Wars</mdc-toolbar-title>
+
       </mdc-toolbar-section>
     </mdc-toolbar-row>
   </mdc-toolbar>
 
 
-  <mdc-drawer-temporary open.bind="isOpen">
-    <mdc-drawer-spacer class="mdc-typography--headline">
+  <mdc-drawer-temporary open.bind="isOpen" id="navigation-drawer">
+    <mdc-drawer-spacer id="drawer-spacer" click.delegate="toggleMenu()">
     </mdc-drawer-spacer>
 
-    <mdc-list tag="nav" click.delegate="toggleMenu()">
+    <mdc-list tag="nav" id="drawer-list" click.delegate="toggleMenu()">
       <a href.bind="route.href" repeat.for="route of router.navigation
           | authRouteFilter & signal: 'auth:state:changed'">
         <mdc-list-item>

@@ -1,12 +1,10 @@
 import { User } from './user';
 import { Arrival } from './arrival';
-import { AuthService } from 'services/firebase/auth';
 import { DateService } from 'services/date';
 
 export class UserHistory {
 
   user: User;
-  // uid: string
   arrivals: Arrival[] = [];
 
   constructor() {
@@ -21,6 +19,22 @@ export class UserHistory {
     return hist;
   }
 
+  sumGotchPoint() {
+    return this.arrivals
+      .map(arrival => arrival.gotchPoint)
+      .reduce((sum, point) => sum + point);
+  }
+
+  getArrival(date: Date): Arrival {
+    const arrivals = this.arrivals
+      .filter(a => a.arrivedAt.getDate() === date.getDate());
+
+    if (arrivals.length > 1) {
+      console.warn('Duplicated arrival times are registered:', arrivals);
+    }
+    return arrivals[0];
+  }
+
   getArrivalTime(date: Date): string {
     const times = this.arrivals
       .filter(a => a.arrivedAt.getDate() === date.getDate())
@@ -29,7 +43,7 @@ export class UserHistory {
     if (times.length > 1) {
       console.warn('Duplicated arrival times are registered:', times);
     }
-    return times[0];
+    return times[0].slice(0, 5);
   }
 
   getStartAndEndDate() {

@@ -1,0 +1,23 @@
+{
+  "short_name": "GotchWars",
+  "name": "Gotch Wars",
+  "description": "Gotch Wars is an Web application for battle of morning practice",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "./apple-touch-icon152x152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "./app-icon192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "background_color": "#5E45B9",
+  "theme_color": "#7BB2B8",
+  "start_url": "./?utm_source=homescreen",
+  "display": "standalone",
+  "orientation": "portrait"
+}

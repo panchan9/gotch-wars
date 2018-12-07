@@ -19,14 +19,14 @@ export class SimpleClock {
   circles: { [index: string]: RadialBar };
 
   // To dispose timer function and release memory
-  timerId: number;
+  timerId: NodeJS.Timeout;
   animationId: number;
 
   constructor(private element: Element) { }
 
   attached() {
     this.container = (<ShadowRoot>this.element.shadowRoot)
-      .querySelector('#clock-container') as HTMLElement;
+      .querySelector('#simple-clock-container') as HTMLElement;
 
     this.timeElems = {
       H: this.container.querySelector('#H') as HTMLElement,
@@ -38,13 +38,13 @@ export class SimpleClock {
         `hsl(${k.charCodeAt(0) * i}, 50%, 50%)`;
     });
 
-    this.canvas = (<ShadowRoot>this.container.parentNode)
-      .appendChild(document.createElement('canvas'));
+    this.canvas = this.container.appendChild(document.createElement('canvas'));
 
     this.width = innerWidth;
-    this.height = innerHeight;
+    this.height = this.width;
     this.canvas.width = this.width;
     this.canvas.height = this.height;
+    this.logger.debug('Canvas Size:', this.canvas);
 
     this.ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
     this.ctx.lineWidth = 3;
@@ -53,7 +53,7 @@ export class SimpleClock {
 
     // create circles
     const spacing = 10;
-    const radius = 200;
+    const radius = this.canvas.width * 0.9 / 2;
     const halfW = this.width / 2;
     const halfH = this.height / 2;
     this.circles = {
@@ -92,7 +92,6 @@ export class SimpleClock {
 
   draw() {
     this.ctx.clearRect(0, 0, this.width, this.height);
-
 
     // update circles, set their color, draw
     Object.keys(this.circles).forEach((key, idx) => {

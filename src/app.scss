@@ -34,15 +34,51 @@
 
 // @import "@material/linear-progress/mdc-linear-progress";
 
+html {
+  height: 100vh;
+}
 
 body {
   margin: 0;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr auto;
+
+}
+
+.linear-progress {
+  grid-column: 1;
+  grid-row: 1;
 }
 
 main {
+  grid-column: 1;
+  grid-row: 1;
   widows: 100%;
   height: auto;
   vertical-align: bottom;
+
+  header {
+    h1 {
+      margin: 24px 16px;
+    }
+  }
+}
+
+// https://material.io/design/components/app-bars-bottom.html#behavior
+// https://material.io/develop/web/components/buttons/floating-action-buttons/
+#fab {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  margin: 0 calc(56px / -2);
+  z-index: 4;
+}
+
+footer {
+  grid-column: 1;
+  grid-row: 2;
 }
 
 // .linear-progress-secondary {
@@ -52,4 +88,8 @@ main {
 .material-icons.list-icon {
   vertical-align: middle;
   margin-right: 8px;
+}
+
+.mdc-snackbar {
+  z-index: 10;
 }
