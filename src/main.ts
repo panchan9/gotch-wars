@@ -13,8 +13,11 @@ import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/functions';
+import * as firebaseui from 'firebaseui';
 import { FirestoreService } from 'services/firebase/firestore';
 import { FunctionsService } from 'services/firebase/functions';
+import { Router } from 'aurelia-router';
+import { AuthUIService } from 'services/firebase/auth-ui';
 
 // Use Icons and Web Font as self-hosting
 // https://medium.com/@daddycat/using-offline-material-icons-and-roboto-font-in-electron-app-f25082447443
@@ -52,11 +55,26 @@ export async function configure(aurelia: Aurelia) {
 
   // Initialize Firebase services
   const firebaseApp = firebase.initializeApp(environment.firebase);
-  console.info(firebaseApp.auth())
   initializeFirebaseServices(aurelia.container, firebaseApp);
 
   await aurelia.start();
-  await aurelia.setRoot(PLATFORM.moduleName('app'));
+
+  const authSvc = aurelia.container.get(AuthService) as AuthService;
+  // wait for initial Auth process to check if the user has been signed in to app
+  authSvc.auth.onAuthStateChanged(user => {
+    logger.info('Auth Stage Changed', user);
+    authSvc.updateUserStatus(user);
+
+    // App Router process start
+    aurelia.setRoot(PLATFORM.moduleName('app'));
+
+    // navigate to sign in page if the user is not logged in
+    if (!user) {
+      const r = aurelia.container.get(Router) as Router;
+      logger.info('Navigate to Sign In page');
+      r.navigate('sign-in');
+    }
+  })
 
   // const httpClient = aurelia.container.invoke(HttpClient)
   //   .configure((config: HttpClientConfiguration) => {
@@ -78,17 +96,19 @@ export async function configure(aurelia: Aurelia) {
   //   });
 
   // aurelia.container.registerInstance(HttpClient, httpClient);
-
 }
 
-function initializeFirebaseServices(container: Container, app: firebase.app.App): void {
-  console.debug(app);
-  const signaler = container.invoke(BindingSignaler) as BindingSignaler;
-  container.registerInstance(AuthService, new AuthService(app.auth(), signaler));
+function initializeFirebaseServices(c: Container, app: firebase.app.App): void {
+  const signaler = c.invoke(BindingSignaler) as BindingSignaler;
+  const auth = app.auth();
+  c.registerInstance(AuthService, new AuthService(auth, signaler));
 
-  container.registerInstance(FirestoreService, new FirestoreService(app.firestore()));
+  const ui = new firebaseui.auth.AuthUI(auth);
+  c.registerInstance(AuthUIService, new AuthUIService(ui))
+
+  c.registerInstance(FirestoreService, new FirestoreService(app.firestore()));
   // https://firebase.google.com/docs/functions/locations?hl=ja#http_and_client_callable_functions
-  container.registerInstance(FunctionsService, new FunctionsService(app.functions('asia-northeast1')));
+  c.registerInstance(FunctionsService, new FunctionsService(app.functions('asia-northeast1')));
 }
 
 function chooseMaterialDesignComponents(b: ConfigBuilder) {

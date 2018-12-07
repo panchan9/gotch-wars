@@ -2,7 +2,6 @@
   <require from="material-components-web/dist/material-components-web.css"></require>
   <require from="./app.scss"></require>
   <require from="./nav-bar"></require>
-  <require from="./login"></require>
 
   <!-- for only Desktop-->
   <!-- <header>
@@ -20,9 +19,7 @@
 
 
   <main>
-    <router-view if.bind="auth.isLoggedIn"></router-view>
-
-    <login else></login>
+    <router-view></router-view>
   </main>
 
   <!-- https://material.io/design/components/app-bars-bottom.html#behavior -->
